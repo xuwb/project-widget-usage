@@ -141,11 +141,11 @@ define(function (require, exports) {
 				configurable: false //更改内部属性
 			});
 		} else {
-				if (limit[name] !== void 0) {
-					throw new TypeError('Cannot redefine property: ' + name);
-				};
-				limit[name] = value;
+			if (limit[name] !== void 0) {
+				throw new TypeError('Cannot redefine property: ' + name);
 			};
+			limit[name] = value;
+		};
 		return value;
 	};
 
@@ -428,8 +428,8 @@ define(function (require, exports) {
 	// 确定正确的遍历值
 	var checkTrueIndex = function checkTrueIndex(length, index) {
 		// 默认值是0
-		index = ~ ~index;
-		length = ~ ~length;
+		index = ~~index;
+		length = ~~length;
 		if (index < 0) {
 			index = length + index;
 			if (index < 0) {
@@ -441,7 +441,7 @@ define(function (require, exports) {
 
 	// 确定是正整数
 	var checkPositive = function checkPositive(num) {
-		num = ~ ~num;
+		num = ~~num;
 		return num < 0 ? 0 : num;
 	};
 
@@ -488,7 +488,7 @@ define(function (require, exports) {
 			// 循环遍历
 			var target = limit._getLoopKey(obj),
 			    key = void 0,
-			    num = ~ ~begin,
+			    num = ~~begin,
 			    len = target.length;
 			for (; num < len; num++) {
 				key = target[num];
@@ -953,7 +953,7 @@ define(function (require, exports) {
 			return Function.call.apply(lastIndexOf, arguments);
 		},
 		fixed: function fixed(arr, ele, formIndex) {
-			formIndex = ~ ~formIndex;
+			formIndex = ~~formIndex;
 			var len = arr.length - 1,
 			    index = limit.indexOf(arr.reverse(), ele, arguments.length === 3 ? len - formIndex : formIndex);
 			// 因为是倒叙
@@ -1105,8 +1105,8 @@ define(function (require, exports) {
 		fixed: function fixed(arr, target, start, end) {
 			var arrLen = arr.length;
 			// 格式化起点终点
-			start = ~ ~start;
-			end = ~ ~end;
+			start = ~~start;
+			end = ~~end;
 			// 纠正小于零的情况
 			start = start < 0 ? arrLen + start : start;
 			end = end <= 0 ? arrLen + end : end;
@@ -1599,7 +1599,7 @@ define(function (require, exports) {
 			return Function.call.apply(endsWith, arguments);
 		},
 		fixed: function fixed(str, arg, index) {
-			index = arguments.length === 3 ? ~ ~index : str.length;
+			index = arguments.length === 3 ? ~~index : str.length;
 			var leg = index - arg.length,
 			    result = str.lastIndexOf(arg, leg);
 			return result !== -1 && str.lastIndexOf(arg, leg) === leg;
@@ -1638,7 +1638,7 @@ define(function (require, exports) {
 	defineIt('random', {
 		value: function value(form, to) {
 			// 格式化入参
-			form = ~ ~form;to = ~ ~to;
+			form = ~~form;to = ~~to;
 			var max = Math.max(form, to),
 			    min = Math.min(form, to);
 			return Math.floor((max - min + 1) * Math.random() + min);
@@ -1700,7 +1700,7 @@ define(function (require, exports) {
 		// 格式化num为字符串
 		num = limit.toString(num);
 		// 控制入参scale为整数
-		scale = ~ ~scale;
+		scale = ~~scale;
 		// 对于0的快速处理
 		if (scale === 0) {
 			return num;
