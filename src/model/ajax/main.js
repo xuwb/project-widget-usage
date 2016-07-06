@@ -32,7 +32,7 @@ define(function(require, exports, module) {
 		},
 		//组件：事件
 		events: {
-
+			
 		},
 		//组件：初始化数据
 		initProps: function(){

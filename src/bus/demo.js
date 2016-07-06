@@ -1,18 +1,20 @@
 'use strict'
 define(function(require, exports, module) {
     var $ = require('$'),
-        MyWidget = require('common/myWidget');
+        MyWidget = require('common/myWidget'),
+        Ajax = require('model/ajax/main');
 
     var template = require('./demo-hbs');
 
     var Demo = MyWidget.extend({
         //组件：类名
         clssName: 'Demo1',
-        propsInAttrs: ['element', 'container', 'data'],
+        propsInAttrs: ['element', 'container', 'data', 'events'],
         //组件：属性
         attrs: {
-            element: 'body',
+            // element: '.container',
             container: '#content',
+            opts: '1',
             data: {
                 info:  [{id: 1, name: 'xuwb'},
                         {id: 2, name: 'jack'},
@@ -107,9 +109,9 @@ define(function(require, exports, module) {
             return index;
         },
         setup: function(){
-            var me = this;
+            console.log("opts", this.get('opts'));
+            console.log(this);
             this.render();
-            // console.log(me.element.data('options'));
         }
     }); 
     return Demo;
