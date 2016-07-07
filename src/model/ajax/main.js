@@ -63,6 +63,7 @@ define(function(require, exports, module) {
 				paramName = me.get('paramName'),
 				DO = me.serializeForm(),
 				param = paramName ? me.paseParam( paramName, DO ) : DO;
+				console.log(me);
 			 me.trigger('ajaxSubmitBefore', DO) && me[me.get('method')]( me.get('request'), param, me.get('type'), function(err, rtv, msg, con){
 				var args = me.setArray(arguments);
 				args.push(DO);

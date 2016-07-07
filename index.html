@@ -26,17 +26,23 @@
         </div>
     </div>
     <script type="text/javascript">
-        seajs.use(['bus/demo'], function(Demo){
+        seajs.use(['bus/demo', 'model/ajax/main'], function(Demo, Ajax){
+
             //console.log(arguments[0])
-            var demo = new Demo({
-                opts: '11111',
-                element: '.container',
-                events: {
-                    'click .button': function(e) {
-                        console.log('123');
-                    }
-                }
-            });
+            new Ajax({
+                request: 'src/data.json',
+                type: 'get'
+            }).on('ajaxSuccess', function(rtv, msg, con) {
+                new Demo({
+                    element: '.container',
+                    events: {
+                        'click .button': function(e) {
+                            console.log('123');
+                        }
+                    },
+                    data: {info: rtv.data}
+                });
+            }).submit();
         });
     </script>
 </body>

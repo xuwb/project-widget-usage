@@ -15,12 +15,12 @@ define(function(require, exports, module) {
             // element: '.container',
             container: '#content',
             opts: '1',
-            data: {
-                info:  [{id: 1, name: 'xuwb'},
-                        {id: 2, name: 'jack'},
-                        {id: 3, name: 'tom'},
-                        {id: 4, name: 'bean'}]
-            },
+            // data: {
+            //     info:  [{id: 1, name: 'xuwb'},
+            //             {id: 2, name: 'jack'},
+            //             {id: 3, name: 'tom'},
+            //             {id: 4, name: 'bean'}]
+            // },
             triggerElem: {
                 delBtn: '.JS_delBtn',
                 addBtn: '.JS_addBtn',
