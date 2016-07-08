@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>reactDemo</title>
+<!-- #这里的设置为了和项目中的设置一样 以后写demo拷贝这一块 -->	
+	<script type="text/javascript">
+	//需要全局配置的地方
+	;(function(WIN){
+		//增加一个全局的静态资源link
+		var config = WIN.CONFIG = {};
+		config.assetsLink = '/src';
+	})(window);
+	</script>
+	<!-- #额外依赖样式 -->
+	<link rel="stylesheet" type="text/css" href="//alinw.alicdn.com/platform/common/s/1.1/global/global.css" />
+	<link rel="stylesheet" type="text/css" href="//alinw.alicdn.com/alinw/kuma-form/2.0.1/kuma-form.css" />
+	<link rel="stylesheet" type="text/css" href="//alinw.alicdn.com/alinw/dialog/2.0.0/dialog.css" />
+	<link rel="stylesheet" type="text/css" href="//alinw.alicdn.com/alinw/scroller/1.0.0/scroller.css" />
+	<link rel="stylesheet" type="text/css" href="//alinw.alicdn.com/alinw/calendar/1.1.17/calendar.css" />
+	<!-- /额外依赖样式 -->
+	<!-- #项目内部资源 -->
+	<link rel="stylesheet" type="text/css" href="/src/assets/css/main.css" />
+	<script type="text/javascript" src="/src/assets/js/jquery-1.11.2.js"></script>
+	<script type="text/javascript" src="/src/assets/js/es5.js"></script>
+	<script type="text/javascript" src="/src/assets/js/sea.js"></script>
+	<script type="text/javascript" src="/src/config.js"></script>
+	<!-- /项目内部资源 -->
+<!-- /这里的设置为了和项目中的设置一样 -->	
+</head>
+<body>
+<!--
+	2016-07-07
+	网站上元素的[react & widget杂糅]原始模型
+		1.表单 验证 提交
+-->
+<!-- #入口DOM -->
+	<div widget="reactModel/demo1/main"></div>
+<!-- /入口DOM -->
+
+</body>
+</html>

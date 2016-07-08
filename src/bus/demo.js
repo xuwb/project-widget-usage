@@ -9,7 +9,7 @@ define(function(require, exports, module) {
     var Demo = MyWidget.extend({
         //组件：类名
         clssName: 'Demo1',
-        propsInAttrs: ['element', 'container', 'data', 'events'],
+        propsInAttrs: ['o','element', 'container', 'data', 'events'],
         //组件：属性
         attrs: {
             // element: '.container',
@@ -31,6 +31,9 @@ define(function(require, exports, module) {
                 value: 'o1',
                 getter: function(v){
                     return v + '-getter'
+                },
+                setter: function(v){
+                    return v + '-setter'
                 }
             }
         },
@@ -43,6 +46,10 @@ define(function(require, exports, module) {
         },
         events: {
             'click {{attrs.triggerElem.delBtn}}': function(e) {
+                console.log(this.o);
+                this.set('o','11')
+                console.log(this.get('o'));
+                console.log(this.o);
                 var elem = $(e.target),
                     data = this.get('data').info,
                     id = elem.data('id');

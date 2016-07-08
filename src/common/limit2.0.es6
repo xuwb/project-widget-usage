@@ -56,16 +56,17 @@ define(function(require, exports) {
 			defineIt(arr.join(','), config);
 		};
 		if( config.value === void 0 ){
-			// 新方法
+			// 新方法               (...args) => args
 			priority = getProp(config, 'priority', F);
-			// 兼容性方法
+			// 兼容性方法           (val) => val
 			fixed = getProp(config, 'fixed', K);
-			// 条件 [默认为false]
+			// 条件 [默认为false]   ()=>{}
 			when = getProp(config, 'when', E);
-			// 格式化参数
+			// 格式化参数           (...args) => args
 			format = getProp(config, 'format', F);
 			// 主函数
 			value = function(){
+				// args = [arrayProto, arguments[0], arguments[1], ... ]
 				let args = concat.call( arrayProto, format(...arguments) );
 				return !limit.limitFixed && when(...args) ? priority(...args) : fixed(...args);
 			};
