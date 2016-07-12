@@ -22,7 +22,7 @@ define(function(require, exports) {
 	limit.logClosed = false;
 
 	// 自有属性
-	const { defineProperty, is, assign, keys, values, entries } = Object;
+	const { defineProperty, is, assign, keys, values, entries, getOwnPropertyNames } = Object;
 	const { toString, hasOwnProperty } = objectProto;
 	const { from, of } = Array;
 	const {	concat, push, slice, unshift, splice,
@@ -51,22 +51,17 @@ define(function(require, exports) {
 		// 对name进行处理
 		let arr = name.split(',');
 		name = arr.shift();
-		if(!name) return;
-		if(arr.length){
-			defineIt(arr.join(','), config);
-		};
 		if( config.value === void 0 ){
-			// 新方法               (...args) => args
+			// 新方法
 			priority = getProp(config, 'priority', F);
-			// 兼容性方法           (val) => val
+			// 兼容性方法
 			fixed = getProp(config, 'fixed', K);
-			// 条件 [默认为false]   ()=>{}
+			// 条件 [默认为false]
 			when = getProp(config, 'when', E);
-			// 格式化参数           (...args) => args
+			// 格式化参数
 			format = getProp(config, 'format', F);
 			// 主函数
 			value = function(){
-				// args = [arrayProto, arguments[0], arguments[1], ... ]
 				let args = concat.call( arrayProto, format(...arguments) );
 				return !limit.limitFixed && when(...args) ? priority(...args) : fixed(...args);
 			};
@@ -87,7 +82,11 @@ define(function(require, exports) {
 			};
 			limit[name] = value;
 		};
-		return value;
+		if(arr.length){
+			return defineIt(arr.join(','), config);
+		}else{
+			return value;
+		};
 	};
 
 	// 传递器
@@ -288,6 +287,27 @@ define(function(require, exports) {
 
 	// --工具方法-- //
 
+		// 获取uid
+		const UID = [0, 0, 0];
+		defineIt('getUid', {
+			value(){
+				let index = UID.length,
+					code;
+				while(index--){
+					code = UID[index];
+					if(code === 9){
+						UID[index] = 0;
+					};
+					if(code < 9){
+						UID[index]++;
+						return UID.join('.');
+					};
+				};
+				UID.unshift(1);
+				return UID.join('.');
+			}
+		});
+
 		// 私有遍历
 		defineIt('_loop', {
 			value: (obj, iterator, context, isBreak, begin) => {
@@ -393,14 +413,37 @@ define(function(require, exports) {
 		});
 
 		// ES5: Object.keys();
+		const keysFixed = (obj) => {
+			let arr = [];
+			limit.forin(obj, (val, key) => limit.has(obj, key) && arr.push(key) );
+			return arr;
+		};
+		
 		defineIt('keys', {
 			when: () => !!keys,
 			priority: (...args) => keys(...args),
 			format: checkTargetNoEqualNull,
-			fixed(obj){
-				let arr = [];
-				limit.forin(obj, (val, key) => limit.has(obj, key) && arr.push(key) );
-				return arr;
+			fixed: keysFixed
+		});
+
+		// mix: keysSuper
+		defineIt('keysSuper', {
+			when: () => !!getOwnPropertyNames,
+			priority: (...args) => getOwnPropertyNames(...args),
+			format: checkTargetNoEqualNull,
+			fixed: keysFixed
+		});
+
+		// mix: assignSuper
+		defineIt('assignSuper', {
+			format: checkTargetNoEqualNull,
+			fixed(target, ...args){
+				limit.each(args, val => {
+					limit.each(val, (val, key) => {
+						limit.isDefined(val) && (target[key] = val);
+					});
+				});
+				return target;
 			}
 		});
 
@@ -411,6 +454,19 @@ define(function(require, exports) {
 				limit.each(args, val => {
 					limit.forin(val, (val, key) => {
 						target[key] = val;
+					});
+				});
+				return target;
+			}
+		});
+
+		// mix: extendSuper
+		defineIt('extendSuper', {
+			format: checkTargetNoEqualNull,
+			fixed(target, ...args){
+				limit.each(args, val => {
+					limit.forin(val, (val, key) => {
+						limit.isDefined(val) && (target[key] = val);
 					});
 				});
 				return target;
@@ -545,6 +601,38 @@ define(function(require, exports) {
 			}
 		});
 
+		// mix: remove 
+		defineIt('remove', {
+			format: checkTargetNoEqualNull,
+			fixed(arr, tar, formIndex){
+				let index = limit.indexOfSuper(arr, tar, formIndex);
+				if(index !== -1){
+					try{
+						if(limit.isArray(arr)){
+							arr.splice(index, 1);
+						}else{
+							delete arr[index];
+						};
+						return true;
+					}catch(e){
+						limit['T.T'](e);
+					};
+				};
+				return false;
+			}
+		});
+
+		// mix: removeAll
+		defineIt('removeAll', {
+			value(arr, tar){
+				if(limit.remove(arr, tar)){
+					return limit.removeAll(arr, tar);
+				}else{
+					return arr; 
+				};
+			}
+		});
+
 		// ES5: forEach [支持obj]
 		defineIt('forEach', {
 			format: checkObjFunction,
@@ -653,6 +741,20 @@ define(function(require, exports) {
 			}
 		});
 
+		// ES5: indexOfSuper [支持obj]
+		defineIt('indexOfSuper', {
+			format: checkTargetNoEqualNull,
+			fixed: (arr, ele, formIndex) => {
+				// 初始化返回值
+				let index = -1;
+				limit._loop(arr, (val, key) => {
+					if( limit.is(val, ele) ) return index = key, false;
+				}, undefined, true, checkTrueIndex(arr.length, formIndex));
+				// loop为了兼容返回值是string
+				return limit.isArrayLike(arr) ? +index : index;
+			}
+		});
+
 		// ES5: lastIndexOf
 		defineIt('lastIndexOf', {
 			format: checkTargetWithArray,
@@ -719,7 +821,7 @@ define(function(require, exports) {
 				// 确保是函数
 				if( obj && obj.length ){
 					// 不考虑IE8的话可以这样写 push.apply(arr, obj);
-					push.apply(arr, slice.call(obj));
+					push.apply(arr, limit.toArray(obj));
 					return limit.map(arr, iterator, context);
 				}else{
 					return arr;
@@ -1017,9 +1119,22 @@ define(function(require, exports) {
 			}
 		});
 
+		// mix: compose 组合 a(b(c())) => (a(), b(), c());
+		defineIt('compose', {
+			value(...args1){
+				return function(...args2){
+					let result = args2;
+					for(let i = args1.length - 1; i >= 0; i--){
+						result = [].concat( args1[i].apply(this, result) );
+					};
+					return result.length <= 1 ? result[0] : result;
+				};
+			}
+		});
+
 	// --字符-- //
 
-		// mix: toArray
+		// mix: toString
 		defineIt('toString', {
 			value(obj){
 				// 如果是null或者undefined
@@ -1379,10 +1494,25 @@ define(function(require, exports) {
 		});
 
 		// mix: 
-		const EXPRESS_REG = /^(?:\s*)(-?\d+(?:\.\d+)?)(?:\s*)([\+\-\*\/])(?:\s*)(-?\d+(?:\.\d+)?)(?:\s*)/;
+		// const BRACKETS_REG = /\(((?!.*\().*?)\)/;
+		const BRACKETS_REG = /\(([^()]*)\)/;
+		const MULTANDDIVISION_REG = /(-?\d+(?:\.\d+)?)(?:\s*)([\*\/])(?:\s*)(-?\d+(?:\.\d+)?)(?:\s*)/;
+		const EXPRESS_REG = /^(?:\s*)(-?\d+(?:\.\d+)?)(?:\s*)([\+\-])(?:\s*)(-?\d+(?:\.\d+)?)(?:\s*)/;
 		defineIt('express,?', {
 			value(exp){
-				if(!EXPRESS_REG.test(exp)){
+				// 优先计算*/
+				if( MULTANDDIVISION_REG.test(exp) ){
+					return limit.express( exp.replace(MULTANDDIVISION_REG, (a, b, c, d) => {
+						return limit[c](+b, +d);
+					}) );
+				};
+				// 如果存在()
+				if( BRACKETS_REG.test(exp) ){
+					return limit.express( exp.replace(BRACKETS_REG, (a, b, c, d) => {
+						return limit.express(b);
+					}) );
+				};
+				if( !EXPRESS_REG.test(exp) ){
 					return limit.toNumber(exp);
 				};
 				return limit.express( exp.replace(EXPRESS_REG, (a, b, c, d) => {

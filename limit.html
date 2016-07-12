@@ -3,11 +3,19 @@
 <head>
     <title>limit 测试</title>
     <meta charset="utf-8">
+    <script type="text/javascript" src="src/assets/js/jquery-1.11.2.js"></script>
+    <script type="text/javascript" src="src/assets/js/sea.js"></script>
+    <script type="text/javascript" src="src/config.js"></script>
     <script type="text/javascript" src="src/common/limit2.0.js"></script>
 </head>
 <body>
     <script type="text/javascript">
-        limit.log(11);
+        seajs.use('./src/common/limit2.0', function(limit){
+            var a = limit.findIndex([1,5,8,10], function(val, key, arr){
+                return val > 5;
+            });
+            console.log(a);
+        })
     </script>
 </body>
 </html>
