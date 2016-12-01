@@ -10,8 +10,8 @@ define(function(require, exports, module) {
 		Modal = require('model/modal/main');
 
 	//变量
-	var plugins = ["advlist", "autolink", "lists", "hr", "emoticons", "textcolor", "insertdatetime", "link", "table",  "fullscreen","preview", "togglemore","upload"];
-	var toolbar_1 = [ "preview fullscreen  undo redo", "fontselect fontsizeselect", "bold italic underline strikethrough removeformat", "forecolor backcolor", "link","emoticons togglemore" ];
+	var plugins = ["advlist", "code", "autolink", "lists", "hr", "emoticons", "textcolor", "insertdatetime", "link", "table",  "fullscreen","preview", "togglemore","upload"];
+	var toolbar_1 = [ "code preview fullscreen  undo redo", "fontselect fontsizeselect", "bold italic underline strikethrough removeformat", "forecolor backcolor", "link","emoticons togglemore" ];
 	var toolbar_2 = [ "alignleft aligncenter alignright alignjustify", "bullist numlist outdent indent", "table hr inserttime" ,"upload"];
 	if(!window.tinymce){
 		return {};

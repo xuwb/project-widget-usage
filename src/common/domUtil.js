@@ -334,8 +334,6 @@ define(function(require, exports, module) {
 		return window.innerHeight || document.documentElement.clientHeight;
 	};
 
-
-
 	return domUtil;
 
 })

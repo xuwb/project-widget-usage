@@ -21,6 +21,7 @@ gulp.tasks.default.dep.push('hephaistos');
 gulp.tasks = builder.tasks;
 
 // sass 全部
+// 需要先安装Ruby，添加环境变量。然后gem install sass安装sass
 var sass = require('gulp-ruby-sass');
 gulp.task('sass', function() {
     sass('src/**/*.scss')
